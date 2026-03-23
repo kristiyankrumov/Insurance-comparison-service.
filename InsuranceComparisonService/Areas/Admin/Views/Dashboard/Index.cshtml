@@ -1,0 +1,117 @@
+@{
+    ViewData["Title"] = "SuperAdmin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex align-items-center mb-4 gap-2">
+    <i class="bi bi-shield-fill-check text-danger fs-3"></i>
+    <h2 class="mb-0">SuperAdmin Dashboard</h2>
+    <span class="badge bg-danger ms-2">SuperAdmin</span>
+</div>
+
+<!-- Потребители -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fs-1 fw-bold text-primary">@ViewBag.TotalUsers</div>
+            <div class="text-muted">Общо потребители</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fs-1 fw-bold text-danger">@ViewBag.SuperAdminCount</div>
+            <div class="text-muted">SuperAdmin</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fs-1 fw-bold text-warning">@ViewBag.AdminCount</div>
+            <div class="text-muted">Admin</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fs-1 fw-bold text-secondary">@ViewBag.UserCount</div>
+            <div class="text-muted">Потребители</div>
+        </div>
+    </div>
+</div>
+
+<!-- Оферти и компании -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fs-1 fw-bold text-success">@ViewBag.TotalOffers</div>
+            <div class="text-muted">Общо оферти</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fs-1 fw-bold text-info">@ViewBag.ActiveOffers</div>
+            <div class="text-muted">Активни оферти</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fs-1 fw-bold text-dark">@ViewBag.TotalCompanies</div>
+            <div class="text-muted">Компании</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center p-3">
+            <div class="fs-1 fw-bold text-purple" style="color:#6f42c1">@ViewBag.TotalFavorites</div>
+            <div class="text-muted">Любими</div>
+        </div>
+    </div>
+</div>
+
+<!-- Оферти по тип -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3"><i class="bi bi-bar-chart text-warning"></i> Оферти по тип застраховка</h5>
+        @{
+            var offersByType = ViewBag.OffersByType as IEnumerable<dynamic>;
+            var typeNames = new Dictionary<int, string> { {0, "Каско"}, {1, "Здравна"}, {2, "Гражданска"}, {3, "Имуществена"} };
+            var typeColors = new Dictionary<int, string> { {0, "bg-primary"}, {1, "bg-success"}, {2, "bg-warning"}, {3, "bg-info"} };
+        }
+        @if (offersByType != null)
+        {
+            foreach (var item in offersByType)
+            {
+                int typeInt = (int)item.Type;
+                string typeName = typeNames.ContainsKey(typeInt) ? typeNames[typeInt] : "Друг";
+                string colorClass = typeColors.ContainsKey(typeInt) ? typeColors[typeInt] : "bg-secondary";
+                int count = (int)item.Count;
+                int percent = ViewBag.TotalOffers > 0 ? (int)((double)count / (double)ViewBag.TotalOffers * 100) : 0;
+
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>@typeName</span>
+                        <span>@count оферти</span>
+                    </div>
+                    <div class="progress" style="height:20px">
+                        <div class="progress-bar @colorClass" style="width:@percent%">@percent%</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Бързи линкове само за SuperAdmin -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title mb-3"><i class="bi bi-lightning text-danger"></i> Бързи действия (само SuperAdmin)</h5>
+        <div class="d-flex gap-2 flex-wrap">
+            <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-danger">
+                <i class="bi bi-people"></i> Управление на роли
+            </a>
+            <a asp-area="Admin" asp-controller="Offers" asp-action="Index" class="btn btn-outline-warning">
+                <i class="bi bi-gear"></i> Управление на оферти
+            </a>
+            <a asp-area="Admin" asp-controller="Offers" asp-action="Create" class="btn btn-outline-success">
+                <i class="bi bi-plus"></i> Нова оферта
+            </a>
+        </div>
+    </div>
+</div>
