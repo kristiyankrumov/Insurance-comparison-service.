@@ -44,3 +44,4 @@ namespace InsuranceComparisonService.Models
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }
+// Validation attributes added 
