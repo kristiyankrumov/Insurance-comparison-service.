@@ -49,12 +49,25 @@
                             </a>
                         </li>
                     }
-                    @if (User.IsInRole("Admin"))
+                    @if (User.IsInRole("SuperAdmin"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-warning fw-bold" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-shield-fill-check"></i> SuperAdmin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Offers" asp-action="Index">Оферти</a></li>
+                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Users" asp-action="Index">Потребители</a></li>
+                            </ul>
+                        </li>
+                    }
+                    else if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Администрация</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Offers" asp-action="Index">Оферти</a></li>
                                 <li><a class="dropdown-item" asp-area="Admin" asp-controller="Users" asp-action="Index">Потребители</a></li>
                             </ul>
                         </li>
