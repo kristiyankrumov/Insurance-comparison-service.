@@ -54,4 +54,3 @@ namespace InsuranceComparisonService.Data
         }
     }
 }
-// Seed data updated 
