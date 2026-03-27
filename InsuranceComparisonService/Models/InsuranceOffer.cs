@@ -6,29 +6,37 @@ namespace InsuranceComparisonService.Models
     {
         Kasko,
         Health,
-        Civil,      // Гражданска отговорност
-        Property    // Имуществена застраховка
+        Civil,
+        Property
     }
 
     public class InsuranceOffer
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Наименованието е задължително")]
+        [Required(ErrorMessage = "Naimenovanieto e zadaljitelno")]
         [StringLength(200)]
         public string Title { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Описанието е задължително")]
+        [Required(ErrorMessage = "Opisanieto e zadaljitelno")]
         public string Description { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Видът застраховка е задължителен")]
+        [Required(ErrorMessage = "Vidat zastrahkovka e zadaljitelen")]
         public InsuranceType Type { get; set; }
 
-        [Required(ErrorMessage = "Цената е задължителна")]
-        [Range(1, 100000, ErrorMessage = "Цената трябва да е между 1 и 100000")]
+        [Required(ErrorMessage = "Tsenata e zadaljitelna")]
+        [Range(1, 100000)]
         public decimal Price { get; set; }
 
-        [Required(ErrorMessage = "Покритието е задължително")]
+        [Range(0, 50)]
+        public int DiscountPercent { get; set; } = 0;
+
+        public decimal FinalPrice =>
+            DiscountPercent > 0
+                ? Math.Round(Price * (1 - DiscountPercent / 100m), 2)
+                : Price;
+
+        [Required]
         public string Coverage { get; set; } = string.Empty;
 
         public string Conditions { get; set; } = string.Empty;
