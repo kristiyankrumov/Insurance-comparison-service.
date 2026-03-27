@@ -28,9 +28,33 @@ namespace InsuranceComparisonService.Controllers
                 .Include(f => f.Offer)
                     .ThenInclude(o => o!.Company)
                 .Where(f => f.UserId == user.Id)
+                .OrderByDescending(f => f.Id)
                 .ToListAsync();
 
             return View(favorites);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Toggle(int offerId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            var existing = await _context.UserFavorites
+                .FirstOrDefaultAsync(f => f.UserId == user.Id && f.OfferId == offerId);
+
+            if (existing == null)
+            {
+                _context.UserFavorites.Add(new UserFavorite { UserId = user.Id, OfferId = offerId });
+            }
+            else
+            {
+                _context.UserFavorites.Remove(existing);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", "Insurance", new { id = offerId });
         }
 
         [HttpPost]
@@ -45,11 +69,7 @@ namespace InsuranceComparisonService.Controllers
 
             if (!exists)
             {
-                _context.UserFavorites.Add(new UserFavorite
-                {
-                    UserId = user.Id,
-                    OfferId = offerId
-                });
+                _context.UserFavorites.Add(new UserFavorite { UserId = user.Id, OfferId = offerId });
                 await _context.SaveChangesAsync();
             }
 
